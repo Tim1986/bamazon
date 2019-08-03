@@ -43,6 +43,5 @@ PRIMARY KEY (department_id)
 );
 
 INSERT INTO departments (department_name, over_head_costs)
-VALUES ("dairy", 1000), ("canned food", 1100), ("meat", 1500), ("bakery", 1300), ("drinks aisle", 600), ("candy aisle", 400), ("baking aisle", 900), ("condiments aisle", 300), ("alcohol", 2000)
-
+VALUES ("dairy", 1000), ("canned food", 1100), ("meat", 1500), ("bakery", 1300), ("drinks aisle", 600), ("candy aisle", 400), ("baking aisle", 900), ("condiments aisle", 300), ("alcohol", 2000);
 
