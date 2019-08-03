@@ -61,6 +61,8 @@ function promptPurchase() {
             function (err, res) {
                 if (err) throw err;
                 var unitsWeHave = res[0].stock_quantity
+                var previousSalesNumber = res[0].product_sales
+                console.log("previousSalesNumber = " + previousSalesNumber)
                 // console.log("unitsWeHave = " + unitsWeHave)
                 var yourProductCost = res[0].price
                 // console.log("YourProductCost = " + yourProductCost)
@@ -79,8 +81,21 @@ function promptPurchase() {
                             if (err) throw err;
                             var cost = yourProductCost * unitsYouWant
                             console.log("That'll cost $" + cost)
-                            connection.end()
-
+                            connection.query("UPDATE products SET ? WHERE ?",
+                                [
+                                    {
+                                        product_sales: previousSalesNumber + cost
+                                    },
+                                    {
+                                        id: yourProductID
+                                    }
+                                ],
+                                function (err, res) {
+                                    if (err) throw err;
+                                    console.log("product_sales column updated")
+                                    connection.end()
+                                }
+                            )
                         })
                 } else {
                     console.log("Insufficient Quantity!")
