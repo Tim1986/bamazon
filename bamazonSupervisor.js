@@ -32,17 +32,18 @@ inquirer.prompt([
             if (err) throw err;
 
             // Delete product_sales column if it exists
+            // QUERY2
             connection.query("ALTER TABLE departments DROP product_sales", function (err, res) {
-                if (err) throw err;
+                if (err) throw err;``
 
                 // Combine product sales from departments to get the productSalesMerge set of objects
-                // QUERY2
+                // QUERY3
                 connection.query("SELECT department_name, SUM(product_sales) AS product_sales FROM products INNER JOIN departments USING (department_name) GROUP BY department_name", function (err, res) {
                     if (err) throw err;
                     var productSalesMerge = res
 
                     // Recreate justProductSales table
-                    // QUERY3
+                    // QUERY4
                     connection.query("CREATE TABLE justProductSales (department_name VARCHAR(255), product_sales INTEGER(10))", function (err, res) {
                         if (err) throw err;
 
@@ -56,71 +57,83 @@ inquirer.prompt([
                         }
 
                         // Add array-ified productSalesMerge objects into justProductSales table
-                        // QUERY4
+                        // QUERY5
                         connection.query("INSERT INTO justProductSales (department_name, product_sales) VALUES ?", [outerArray], function (err, res) {
                             if (err) throw err;
 
                             // Merge justProductSales table with departments table on department_name
-                            // QUERY5
+                            // QUERY6
                             connection.query("SELECT * FROM departments d INNER JOIN justProductSales j ON d.department_name = j.department_name ORDER BY department_id ASC", function (err, res) {
                                 if (err) throw err;
                                 var tableWithSales = res
 
                                 // Create product_sales column in departments table
-                                // QUERY5.3
-                                connection.query("ALTER TABLE departments ADD COLUMN product_sales INTEGER(10)", function (err, res) {
+                                // QUERY7
+                                connection.query("ALTER TABLE departments ADD COLUMN product_sales INTEGER(10) DEFAULT 0", function (err, res) {
                                     if (err) throw err;
 
+
+
+
+
+
+                                    var outerArray = []
+                                    for (var i = 0; i < productSalesMerge.length; i++) {
+                                        var innerArray = []
+                                        innerArray.push(productSalesMerge[i].department_name)
+                                        innerArray.push(productSalesMerge[i].product_sales)
+                                        outerArray.push(innerArray)
+                                    }
+                                    console.log(outerArray)
+            
+                                    var testArray = [
+
+                                    ]
+
                                     // Add product Sales info to departments table
-                                    // QUERY5.7
-                                    // connection.query("UPDATE departments SET ? WHERE ?",
-                                    //     [
-                                    //         {
-                                    //             product_sales: 100
-                                    //         },
-                                    //         {
-                                    //             department_name: dairy
-                                    //         }
-                                    //     ], function (err, res) {
-                                    //         if (err) throw err;
-
-                                    // Time for Total Profit
-                                    // Delete totalProfit table from previous run
-                                    // QUERY6
-                                    connection.query("DROP TABLE justTotalProfit", function (err, res) {
-                                        if (err) throw err;
-
-                                        // Recreate totalProfit table
-                                        // QUERY7
-                                        connection.query("CREATE TABLE justTotalProfit (department_name VARCHAR(255), total_profit INTEGER(10))", function (err, res) {
+                                    // QUERY7.5 (IN PROCESS)
+                                    connection.query("UPDATE departments SET product_sales = 10, product_sales = 4 WHERE department_name = 'bakery'", function (err, res) {
                                             if (err) throw err;
 
-                                            // find total_profit from (product_sales - over_head_costs) and make them arrays
-                                            var outerArray = []
-                                            for (var i = 0; i < tableWithSales.length; i++) {
-                                                var innerArray = []
-                                                innerArray.push(tableWithSales[i].department_name)
-                                                innerArray.push((parseFloat(tableWithSales[i].product_sales) - parseFloat(tableWithSales[i].over_head_costs)))
-                                                outerArray.push(innerArray)
-                                            }
-                                            // console.log(outerArray)
-
-                                            // Push these arrays into the totalProfit table
+                                            // Time for Total Profit
+                                            // Delete totalProfit table from previous run
                                             // QUERY8
-                                            connection.query("INSERT INTO justTotalProfit (department_name, total_profit) VALUES ?", [outerArray], function (err, res) {
+                                            connection.query("DROP TABLE justTotalProfit", function (err, res) {
                                                 if (err) throw err;
 
-                                                // Merge justTotalProfit table with departments table on department_name
+                                                // Recreate totalProfit table
                                                 // QUERY9
-                                                connection.query("SELECT * FROM departments d INNER JOIN justTotalProfit j ON d.department_name = j.department_name ORDER BY department_id ASC", function (err, res) {
+                                                connection.query("CREATE TABLE justTotalProfit (department_name VARCHAR(255), total_profit INTEGER(10))", function (err, res) {
                                                     if (err) throw err;
 
-                                                    console.table(res)
-                                                    connection.end()
+                                                    // find total_profit from (product_sales - over_head_costs) and make them arrays
+                                                    var outerArray = []
+                                                    for (var i = 0; i < tableWithSales.length; i++) {
+                                                        var innerArray = []
+                                                        innerArray.push(tableWithSales[i].department_name)
+                                                        innerArray.push((parseFloat(tableWithSales[i].product_sales) - parseFloat(tableWithSales[i].over_head_costs)))
+                                                        outerArray.push(innerArray)
+                                                    }
+                                                    // console.log(outerArray)
+
+                                                    // Push these arrays into the totalProfit table
+                                                    // QUERY10
+                                                    connection.query("INSERT INTO justTotalProfit (department_name, total_profit) VALUES ?", [outerArray], function (err, res) {
+                                                        if (err) throw err;
+
+                                                        // Merge justTotalProfit table with departments table on department_name
+                                                        // QUERY11
+                                                        connection.query("SELECT * FROM departments d INNER JOIN justTotalProfit j ON d.department_name = j.department_name ORDER BY department_id ASC", function (err, res) {
+                                                            if (err) throw err;
+
+                                                            console.table(res)
+                                                            connection.end()
+                                                        })
+                                                        })
+                                                    })
                                                 })
                                             })
-                                        })
-                                    })
+                                        // })
                                 })
                             })
                         })
@@ -132,3 +145,8 @@ inquirer.prompt([
         console.log("I'll get to it")
     }
 })
+
+// SELECT p.department_name, SUM(d.over_head_costs) AS total_overhead, SUM(p.product_sales) AS total_sales, SUM(p.product_sales) - SUM(d.over_head_costs) AS total_profit
+// FROM products AS p INNER JOIN departments AS d 
+// ON p.department_name = d.department_name
+// GROUP BY d.department_name;
