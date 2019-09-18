@@ -32,4 +32,4 @@ https://tim1986.github.io/bamazon/
 
 This app uses the inquirer npm and mysql.
 
-I'm a student seven weeks into a twelve week coding boot camp at UNC Charlotte. I was given this project as an assignment, and a series of activities to help me learn how to get the files to interact properly. I wrote this code, with those caveats.
+I made this app while I was a student seven weeks into a twelve week coding boot camp at UNC Charlotte. I was given this project as an assignment, and a series of activities to help me learn how to get the files to interact properly. I wrote this code, with those caveats.

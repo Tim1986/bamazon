@@ -23,6 +23,8 @@ inquirer.prompt([
         message: "Choose an option",
         choices: ["View Product Sales by Department", "Create New Department"]
     }
+    // in products, sum total sales of each department by department name. display that in departments table
+    // in departments, subtract total overhead from total sales. display that in departments table
 ]).then(function (response) {
     if (response.options === "View Product Sales by Department") {
         connection.query("SELECT p.department_name, SUM(d.over_head_costs) AS total_overhead, SUM(p.product_sales) AS total_sales, SUM(p.product_sales) - SUM(d.over_head_costs) AS total_profit FROM products AS p INNER JOIN departments AS d ON p.department_name = d.department_name GROUP BY d.department_name", function (err, res) {
