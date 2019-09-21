@@ -2,7 +2,7 @@
 
 ## Overview
 
-The bamazon app tracks the products in a MySQL spreadsheet in response to node commands. It allows a user to act as a customer who can buy products from the list, which updates the spreadsheet accordingly. The user can also act as a manager who checks his inventory, restocks the inventory, and adds additional products.
+The bamazon app tracks products in a MySQL spreadsheet in response to node commands. It allows a user to act as a customer who can buy products from the list, which updates the spreadsheet accordingly. The user can also act as a manager who checks his inventory, restocks the inventory, and adds additional products.
 
 ## Installation
 
